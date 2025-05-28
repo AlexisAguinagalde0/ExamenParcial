@@ -1,3 +1,26 @@
+def pedir_modo_valido() -> str:
+    """
+    Solicita al usuario que ingrese un modo de carga válido y lo retorna normalizado.
+
+    Además, si el usuario ingresa "hardcodeado", la función lo convierte automáticamente 
+    a "hard" para estandarizar la salida.
+
+    Retorna:
+        str: El modo de carga válido, que será "manual" o "hard".
+    """
+    modo = input("Ingrese modo de carga (manual/hardcodeado): ")
+
+    while True:
+        if modo == "manual" or modo == "hard" or modo == "hardcodeado":
+            break
+        else:
+            print("Modo inválido. Use 'manual' o 'hardcodeado'.")
+            modo = input("Ingrese modo de carga (manual/hardcodeado): ")
+
+    if modo == "hardcodeado":
+        modo = "hard"
+
+    return modo
 
 def es_numero_valido_ascii(cadena: str) -> bool:
     """
@@ -52,9 +75,14 @@ def validar_nombre(nombre: str) -> str:
     Retorna:
         str: Nombre validado correctamente.
     """
-    while not es_nombre_valido_ascii(nombre):
+    valido = es_nombre_valido_ascii(nombre)
+    while valido is False:
         print("Nombre inválido. No debe contener números y no puede estar vacío.")
         nombre = input("Ingrese el nombre: ")
+        if es_nombre_valido_ascii(nombre):
+            valido = True
+        else:
+            valido = False
     return nombre
 
 def es_genero_valido_ascii(c: str) -> bool:
@@ -85,10 +113,13 @@ def validar_genero(genero: str) -> str:
     Retorna:
         str: Género validado.
     """
-    while len(genero) != 1 or not es_genero_valido_ascii(genero):
+    while True:
+        if len(genero) == 1 and es_genero_valido_ascii(genero):
+            break
         print("Género inválido. Debe ser M, F o X (mayúscula o minúscula).")
         genero = input("Género (M/F/X): ")
     return genero
+
 
 def validar_legajo(entrada: str, legajos_actuales: list[int]) -> int:
     """
@@ -96,18 +127,22 @@ def validar_legajo(entrada: str, legajos_actuales: list[int]) -> int:
 
     Argumentos:
         entrada (str): Entrada inicial del legajo.
-        legajos_actuales (list[int]): Lista de legajos ya utilizados para evitar repeticiones.
+        legajos_actuales: Lista de legajos ya utilizados para evitar repeticiones.
 
     Retorna:
         int: Legajo validado como entero.
     """
-    while not (es_numero_valido_ascii(entrada) and len(entrada) == 5) or int(entrada) in legajos_actuales:
-        if not (es_numero_valido_ascii(entrada) and len(entrada) == 5):
+    while True:
+        if es_numero_valido_ascii(entrada) and len(entrada) == 5:
+            if int(entrada) not in legajos_actuales:
+                break
+            else:
+                print("Legajo ya existe. Ingrese un legajo diferente.")
+        else:
             print("Legajo inválido. Debe ser un número de 5 cifras.")
-        elif int(entrada) in legajos_actuales:
-            print("Legajo ya existe. Ingrese un legajo diferente.")
         entrada = input("Legajo (5 cifras): ")
     return int(entrada)
+
 
 
 def validar_nota(numero_materia: int, nombre: str) -> int:
@@ -121,8 +156,53 @@ def validar_nota(numero_materia: int, nombre: str) -> int:
     Retorna:
         int: Nota validada.
     """
-    nota_str = input(f"Ingrese la nota de MATERIA_{numero_materia} para {nombre}: ")
-    while not (es_numero_valido_ascii(nota_str) and 1 <= int(nota_str) <= 10):
-        print("Nota inválida. Debe estar entre 1 y 10.")
+    while True:
         nota_str = input(f"Ingrese la nota de MATERIA_{numero_materia} para {nombre}: ")
-    return int(nota_str)
+        if es_numero_valido_ascii(nota_str) and 1 <= int(nota_str) <= 10:
+            return int(nota_str)
+        print("Nota inválida. Debe estar entre 1 y 10.")
+
+
+
+def validar_materia(entrada: str) -> int:
+    """
+    Solicita y valida el número de materia hasta que esté entre 1 y 5.
+
+    Argumentos:
+        entrada: Entrada inicial del número de materia.
+
+    Retorna:
+        int: Número de materia validado.
+    """
+    es_valido = False
+
+    while not es_valido:
+        if es_numero_valido_ascii(entrada):
+            numero = int(entrada)
+            if numero >= 1 and numero <= 5:
+                es_valido = True
+            else:
+                print("Número fuera de rango. Debe estar entre 1 y 5.")
+                entrada = input("Ingrese el número de la materia (1 a 5): ")
+        else:
+            print("Entrada inválida. Solo se permiten números del 1 al 5.")
+            entrada = input("Ingrese el número de la materia (1 a 5): ")
+
+    return int(entrada)
+
+
+def pedir_opcion_menu(entrada: str) -> int:
+    """
+    Solicita una opción del menú y valida que esté entre 1 y 8.
+
+    Argumentos:
+        entrada (str): Entrada inicial del usuario.
+
+    Retorna:
+        int: Opción validada entre 1 y 8.
+    """
+    while True:
+        if es_numero_valido_ascii(entrada) and 1 <= int(entrada) <= 8:
+            return int(entrada)
+        print("Opción inválida. Ingrese un número del 1 al 8.")
+        entrada = input("Ingrese la opción: ")

@@ -208,3 +208,27 @@ def buscar_por_legajo():
 
     if not encontrado:
         print("Estudiante no encontrado.")          #Si no se encuentra el estudiante, imprime por pantalla que no se encontro al estudiante con ese legajo
+
+def contar_calificaciones_por_materia(matriz, numero_materia):
+    """
+    Cuenta cuántas veces se repite cada calificación (del 1 al 10)
+    en una materia específica (columna de la matriz).
+
+    Argumertos:
+        Matriz de calificaciones (30x5).
+        numero_materia (int): Número de materia (1 a 5).
+
+    Retorna:
+        Lista de 10 elementos. En índice i, la cantidad de veces que aparece la nota i+1.
+    """
+    conteo = [0] * 10  # índices 0 a 9 representan notas 1 a 10
+    columna = numero_materia - 1
+
+    for fila in matriz:
+        nota = fila[columna]
+        if nota >= 1 and nota <= 10:
+            conteo[nota - 1] += 1
+
+    return conteo
+
+
